@@ -6,7 +6,7 @@
     <title>Финансовый помощник</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* ===== ГЛОБАЛЬНЫЙ СТИЛЬ ===== */
+        /* ===== ОБЩИЙ СТИЛЬ ===== */
         * {
             margin: 0;
             padding: 0;
@@ -22,15 +22,129 @@
             padding: 20px 16px;
             background: radial-gradient(circle at 20% 30%, #1a1f2e, #0b0d14);
             color: #fff;
+            position: relative;
+            overflow-x: hidden;
         }
 
+        /* ===== ФОН С МОНЕТАМИ И ГРАФИКАМИ ===== */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .coin {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.05));
+            border: 1px solid rgba(255, 215, 0, 0.10);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.03);
+            animation: floatCoin 12s ease-in-out infinite alternate;
+        }
+
+        .coin:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 5%;
+            left: -10%;
+            animation-duration: 14s;
+        }
+        .coin:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            bottom: 10%;
+            right: -15%;
+            animation-duration: 18s;
+            animation-delay: 2s;
+        }
+        .coin:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 40%;
+            left: 70%;
+            animation-duration: 10s;
+            animation-delay: 4s;
+        }
+        .coin:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            bottom: 30%;
+            left: -5%;
+            animation-duration: 16s;
+            animation-delay: 1s;
+        }
+        .coin:nth-child(5) {
+            width: 70px;
+            height: 70px;
+            top: 70%;
+            right: 5%;
+            animation-duration: 12s;
+            animation-delay: 3s;
+        }
+
+        @keyframes floatCoin {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                transform: translate(20px, -30px) scale(1.1);
+            }
+        }
+
+        .graph-line {
+            position: absolute;
+            border: 2px solid rgba(76, 175, 132, 0.08);
+            border-radius: 100px;
+            width: 300px;
+            height: 120px;
+            transform: rotate(-10deg);
+            animation: waveGraph 20s ease-in-out infinite alternate;
+        }
+
+        .graph-line:nth-child(6) {
+            top: 20%;
+            right: -10%;
+            border-color: rgba(255, 215, 0, 0.06);
+            animation-duration: 22s;
+            width: 350px;
+            height: 150px;
+        }
+
+        .graph-line:nth-child(7) {
+            bottom: 15%;
+            left: -5%;
+            border-color: rgba(100, 200, 255, 0.05);
+            animation-duration: 18s;
+            animation-delay: 3s;
+            width: 280px;
+            height: 100px;
+            transform: rotate(5deg);
+        }
+
+        @keyframes waveGraph {
+            0% {
+                transform: translateX(0) rotate(-10deg) scaleY(1);
+            }
+            100% {
+                transform: translateX(30px) rotate(-6deg) scaleY(1.2);
+            }
+        }
+
+        /* ===== КОНТЕНТ ===== */
         #app {
             max-width: 420px;
             width: 100%;
             padding-bottom: 40px;
+            position: relative;
+            z-index: 1;
         }
 
-        /* ===== КАРТОЧКА БАЛАНСА (стиль "пластиковая карта") ===== */
+        /* ===== КАРТОЧКА БАЛАНСА ===== */
         .balance-card {
             background: linear-gradient(145deg, #202736, #131a26);
             border-radius: 28px;
@@ -93,7 +207,7 @@
             color: #ef6b6b;
         }
 
-        /* ===== КНОПКИ (3D-эффект) ===== */
+        /* ===== КНОПКИ ===== */
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -159,7 +273,6 @@
             border-color: rgba(180, 100, 255, 0.15);
         }
 
-        /* ===== ПОЛЯ ВВОДА ===== */
         .input-group {
             background: #141b28;
             border-radius: 18px;
@@ -196,7 +309,6 @@
             background: #141b28;
         }
 
-        /* ===== РАЗДЕЛЫ ===== */
         .section {
             display: none;
             margin-top: 10px;
@@ -264,7 +376,6 @@
             letter-spacing: -0.3px;
         }
 
-        /* ===== АДАПТАЦИЯ ===== */
         @media (max-width: 400px) {
             .balance-amount {
                 font-size: 30px;
@@ -277,6 +388,17 @@
     </style>
 </head>
 <body>
+    <!-- ===== ФОН ===== -->
+    <div class="bg-pattern">
+        <div class="coin"></div>
+        <div class="coin"></div>
+        <div class="coin"></div>
+        <div class="coin"></div>
+        <div class="coin"></div>
+        <div class="graph-line"></div>
+        <div class="graph-line"></div>
+    </div>
+
     <div id="app">
         <!-- ГЛАВНЫЙ ЭКРАН -->
         <div id="mainScreen">
@@ -303,7 +425,6 @@
                 <button class="btn btn-danger" onclick="showSection('reset')">🗑️ Сброс</button>
             </div>
 
-            <!-- Админ-кнопка -->
             <div id="adminSection" style="display:none; margin-top: 14px;">
                 <button class="btn btn-admin" onclick="sendCommand('stats')">📊 Статистика</button>
             </div>
@@ -471,29 +592,14 @@
         function sendCommand(cmd) {
             let text = '';
             switch (cmd) {
-                case 'balance':
-                    text = '💰 Баланс';
-                    break;
-                case 'report':
-                    text = '📊 Отчёт';
-                    break;
-                case 'history':
-                    text = '📋 История';
-                    break;
-                case 'excel':
-                    text = '📤 Выгрузка в Excel';
-                    break;
-                case 'reset_confirm':
-                    text = '✅ Да, удалить всё';
-                    break;
-                case 'stats':
-                    text = '📊 Статистика';
-                    break;
-                case 'delete_budget':
-                    text = '🗑️ Удалить лимит';
-                    break;
-                default:
-                    text = cmd;
+                case 'balance': text = '💰 Баланс'; break;
+                case 'report': text = '📊 Отчёт'; break;
+                case 'history': text = '📋 История'; break;
+                case 'excel': text = '📤 Выгрузка в Excel'; break;
+                case 'reset_confirm': text = '✅ Да, удалить всё'; break;
+                case 'stats': text = '📊 Статистика'; break;
+                case 'delete_budget': text = '🗑️ Удалить лимит'; break;
+                default: text = cmd;
             }
             sendToBot(text);
         }
