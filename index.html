@@ -6,141 +6,273 @@
     <title>Финансовый помощник</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ===== ГЛОБАЛЬНЫЙ СТИЛЬ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0f0f0f;
-            color: #ffffff;
+            font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            min-height: 100vh;
-            padding: 16px;
-            background: #0a0a0a;
+            align-items: flex-start;
+            padding: 20px 16px;
+            background: radial-gradient(circle at 20% 30%, #1a1f2e, #0b0d14);
+            color: #fff;
         }
+
         #app {
             max-width: 420px;
             width: 100%;
             padding-bottom: 40px;
         }
+
+        /* ===== КАРТОЧКА БАЛАНСА (стиль "пластиковая карта") ===== */
         .balance-card {
-            background: #1e1e1e;
-            border-radius: 24px;
-            padding: 24px 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-            border: 1px solid #2a2a2a;
+            background: linear-gradient(145deg, #202736, #131a26);
+            border-radius: 28px;
+            padding: 24px 22px;
+            margin-bottom: 28px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 215, 0, 0.15);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            position: relative;
+            overflow: hidden;
         }
+
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.06), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
         .balance-label {
-            font-size: 14px;
-            color: #888;
+            font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            color: #9aa4b8;
+            font-weight: 600;
         }
+
         .balance-amount {
-            font-size: 36px;
+            font-size: 38px;
             font-weight: 700;
             color: #f5c842;
-            margin: 8px 0 4px;
+            margin: 6px 0 8px;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 20px rgba(245, 200, 66, 0.15);
         }
+
         .balance-details {
             display: flex;
             justify-content: space-between;
-            margin-top: 10px;
             font-size: 14px;
-            color: #aaa;
+            color: #b0bcca;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 14px;
+            margin-top: 6px;
         }
-        .balance-details span { color: #fff; }
-        .balance-details .income { color: #4caf50; }
-        .balance-details .expense { color: #ef5350; }
 
+        .balance-details span {
+            color: #fff;
+        }
+
+        .balance-details .income {
+            color: #4caf84;
+        }
+
+        .balance-details .expense {
+            color: #ef6b6b;
+        }
+
+        /* ===== КНОПКИ (3D-эффект) ===== */
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 12px;
         }
-        .grid-1 {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
+
         .btn {
-            background: #1e1e1e;
+            background: #1e2638;
             border: none;
-            border-radius: 16px;
-            padding: 16px 8px;
+            border-radius: 18px;
+            padding: 18px 8px;
             font-size: 15px;
-            font-weight: 500;
-            color: #fff;
+            font-weight: 600;
+            color: #f0f4ff;
             cursor: pointer;
-            transition: 0.15s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            border: 1px solid #2a2a2a;
+            transition: 0.12s ease;
+            box-shadow: 0 6px 0 #0f131e, 0 8px 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.04);
             text-align: center;
+            line-height: 1.3;
+            position: relative;
         }
-        .btn:active { transform: scale(0.96); background: #2a2a2a; }
-        .btn .emoji { font-size: 20px; display: block; margin-bottom: 4px; }
 
-        .btn-primary { background: #2e7d32; border-color: #388e3c; }
-        .btn-danger { background: #c62828; border-color: #d32f2f; }
-        .btn-accent { background: #1a237e; border-color: #283593; }
-        .btn-gold { background: #b8860b; border-color: #d4a017; }
-        .btn-admin { background: #4a148c; border-color: #6a1b9a; }
-
-        .input-group {
-            background: #1a1a1a;
-            border-radius: 16px;
-            padding: 12px 16px;
-            margin-bottom: 12px;
-            border: 1px solid #2a2a2a;
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #0f131e;
         }
-        .input-group label {
-            font-size: 12px;
-            color: #888;
+
+        .btn .emoji {
+            font-size: 22px;
             display: block;
             margin-bottom: 4px;
         }
-        .input-group input, .input-group select {
+
+        .btn-primary {
+            background: #1e4a3a;
+            box-shadow: 0 6px 0 #0f2a20, 0 8px 20px rgba(0, 0, 0, 0.5);
+            border-color: rgba(76, 175, 132, 0.2);
+        }
+
+        .btn-danger {
+            background: #5a2626;
+            box-shadow: 0 6px 0 #331414, 0 8px 20px rgba(0, 0, 0, 0.5);
+            border-color: rgba(239, 107, 107, 0.15);
+        }
+
+        .btn-accent {
+            background: #1a2a5e;
+            box-shadow: 0 6px 0 #0e1a3a, 0 8px 20px rgba(0, 0, 0, 0.5);
+            border-color: rgba(100, 130, 255, 0.15);
+        }
+
+        .btn-gold {
+            background: #7a621a;
+            box-shadow: 0 6px 0 #4a3b0e, 0 8px 20px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 215, 0, 0.2);
+        }
+
+        .btn-admin {
+            background: #3a1f5e;
+            box-shadow: 0 6px 0 #1f0f33, 0 8px 20px rgba(0, 0, 0, 0.5);
+            border-color: rgba(180, 100, 255, 0.15);
+        }
+
+        /* ===== ПОЛЯ ВВОДА ===== */
+        .input-group {
+            background: #141b28;
+            border-radius: 18px;
+            padding: 14px 18px;
+            margin-bottom: 14px;
+            border: 1px solid #2a3448;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-group label {
+            font-size: 12px;
+            color: #8a96b0;
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .input-group input,
+        .input-group select {
             width: 100%;
             background: transparent;
             border: none;
-            color: #fff;
+            color: #f0f4ff;
             font-size: 16px;
             outline: none;
         }
-        .input-group input::placeholder { color: #555; }
-        .input-group select option { background: #1a1a1a; }
 
-        .section { display: none; margin-top: 10px; }
-        .section.active { display: block; }
+        .input-group input::placeholder {
+            color: #4a5670;
+        }
+
+        .input-group select option {
+            background: #141b28;
+        }
+
+        /* ===== РАЗДЕЛЫ ===== */
+        .section {
+            display: none;
+            margin-top: 10px;
+            animation: fadeUp 0.25s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         .back-btn {
             background: transparent;
             border: none;
-            color: #888;
+            color: #8a96b0;
             font-size: 14px;
             padding: 8px 0 16px;
             cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
         }
-        .back-btn:hover { color: #fff; }
+
+        .back-btn:hover {
+            color: #fff;
+        }
 
         .info-text {
-            background: #1a1a1a;
-            border-radius: 16px;
-            padding: 16px;
-            margin: 12px 0;
+            background: #141b28;
+            border-radius: 18px;
+            padding: 18px;
+            margin: 14px 0;
             font-size: 14px;
-            color: #ccc;
-            line-height: 1.5;
-            border: 1px solid #2a2a2a;
+            color: #c8d0e0;
+            line-height: 1.6;
+            border: 1px solid #2a3448;
         }
-        .info-text strong { color: #f5c842; }
+
+        .info-text strong {
+            color: #f5c842;
+        }
+
         .footer-text {
             text-align: center;
             font-size: 12px;
-            color: #444;
-            margin-top: 24px;
+            color: #3d4a60;
+            margin-top: 28px;
+            letter-spacing: 0.3px;
+        }
+
+        h3 {
+            font-weight: 600;
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: #f0f4ff;
+            letter-spacing: -0.3px;
+        }
+
+        /* ===== АДАПТАЦИЯ ===== */
+        @media (max-width: 400px) {
+            .balance-amount {
+                font-size: 30px;
+            }
+            .btn {
+                font-size: 13px;
+                padding: 14px 6px;
+            }
         }
     </style>
 </head>
@@ -148,7 +280,7 @@
     <div id="app">
         <!-- ГЛАВНЫЙ ЭКРАН -->
         <div id="mainScreen">
-            <div class="balance-card" id="balanceCard">
+            <div class="balance-card">
                 <div class="balance-label">💰 Баланс</div>
                 <div class="balance-amount" id="balanceAmount">0 ₽</div>
                 <div class="balance-details">
@@ -171,8 +303,8 @@
                 <button class="btn btn-danger" onclick="showSection('reset')">🗑️ Сброс</button>
             </div>
 
-            <!-- Админ-кнопка (видна только тебе) -->
-            <div id="adminSection" style="display:none; margin-top: 12px;">
+            <!-- Админ-кнопка -->
+            <div id="adminSection" style="display:none; margin-top: 14px;">
                 <button class="btn btn-admin" onclick="sendCommand('stats')">📊 Статистика</button>
             </div>
 
@@ -182,7 +314,7 @@
         <!-- ДОХОД -->
         <div id="incomeSection" class="section">
             <button class="back-btn" onclick="showSection('main')">← Назад</button>
-            <h3 style="margin-bottom: 12px;">💰 Добавить доход</h3>
+            <h3>💰 Добавить доход</h3>
             <div class="input-group">
                 <label>Сумма</label>
                 <input type="number" id="incomeAmountInput" placeholder="Например: 15000" />
@@ -209,7 +341,7 @@
         <!-- РАСХОД -->
         <div id="expenseSection" class="section">
             <button class="back-btn" onclick="showSection('main')">← Назад</button>
-            <h3 style="margin-bottom: 12px;">💸 Добавить расход</h3>
+            <h3>💸 Добавить расход</h3>
             <div class="input-group">
                 <label>Сумма</label>
                 <input type="number" id="expenseAmountInput" placeholder="Например: 500" />
@@ -239,7 +371,7 @@
         <!-- БЮДЖЕТ -->
         <div id="budgetSection" class="section">
             <button class="back-btn" onclick="showSection('main')">← Назад</button>
-            <h3 style="margin-bottom: 12px;">📈 Бюджет</h3>
+            <h3>📈 Бюджет</h3>
             <div class="input-group">
                 <label>Категория</label>
                 <select id="budgetCategory">
@@ -266,7 +398,7 @@
         <!-- ДОНАТ -->
         <div id="donateSection" class="section">
             <button class="back-btn" onclick="showSection('main')">← Назад</button>
-            <h3 style="margin-bottom: 12px;">⭐ Донат</h3>
+            <h3>⭐ Донат</h3>
             <div class="info-text">Поддержи разработчика!<br/>Напиши сумму в Stars (например, 10, 25, 50).</div>
             <div class="input-group">
                 <label>Сумма (Stars)</label>
@@ -278,7 +410,7 @@
         <!-- ОТЗЫВ -->
         <div id="reviewSection" class="section">
             <button class="back-btn" onclick="showSection('main')">← Назад</button>
-            <h3 style="margin-bottom: 12px;">💬 Отзыв</h3>
+            <h3>💬 Отзыв</h3>
             <div class="info-text">Напиши своё мнение о боте. Спасибо! 🙏</div>
             <div class="input-group">
                 <label>Текст отзыва</label>
@@ -290,25 +422,25 @@
         <!-- ИНСТРУКЦИЯ -->
         <div id="helpSection" class="section">
             <button class="back-btn" onclick="showSection('main')">← Назад</button>
-            <h3 style="margin-bottom: 12px;">❓ Инструкция</h3>
+            <h3>❓ Инструкция</h3>
             <div class="info-text">
-                <strong>Как добавить доход:</strong><br/>
+                <strong>💰 Как добавить доход:</strong><br/>
                 Нажми «Доход» → выбери категорию → введи сумму → описание (необязательно).<br/><br/>
-                <strong>Как добавить расход:</strong><br/>
+                <strong>💸 Как добавить расход:</strong><br/>
                 Нажми «Расход» → выбери категорию → введи сумму → описание (необязательно).<br/><br/>
-                <strong>Бюджет:</strong><br/>
+                <strong>📈 Бюджет:</strong><br/>
                 Установи лимит на категорию — бот предупредит о превышении.<br/><br/>
-                <strong>Отчёт:</strong><br/>
+                <strong>📊 Отчёт:</strong><br/>
                 Покажет доходы и расходы за месяц по категориям.<br/><br/>
-                <strong>Excel:</strong><br/>
+                <strong>📤 Excel:</strong><br/>
                 Выгрузи все операции в файл.<br/><br/>
-                <strong>Донат:</strong><br/>
+                <strong>⭐ Донат:</strong><br/>
                 Поддержи разработчика через Telegram Stars.<br/><br/>
-                <strong>Отзыв:</strong><br/>
+                <strong>💬 Отзыв:</strong><br/>
                 Напиши своё мнение — бот отправит его разработчику.<br/><br/>
-                <strong>Сброс:</strong><br/>
+                <strong>🗑️ Сброс:</strong><br/>
                 Удаляет все твои данные (доходы, расходы, бюджеты).<br/><br/>
-                <strong>Статистика:</strong><br/>
+                <strong>📊 Статистика:</strong><br/>
                 Доступна только администратору.
             </div>
         </div>
@@ -316,8 +448,8 @@
         <!-- СБРОС -->
         <div id="resetSection" class="section">
             <button class="back-btn" onclick="showSection('main')">← Назад</button>
-            <h3 style="margin-bottom: 12px;">⚠️ Сброс данных</h3>
-            <div class="info-text" style="border-color: #c62828;">
+            <h3>⚠️ Сброс данных</h3>
+            <div class="info-text" style="border-color: #b33;">
                 <strong>ВНИМАНИЕ!</strong><br/>
                 Это действие удалит все твои доходы, расходы и бюджеты.<br/>
                 <strong>Отменить нельзя!</strong>
@@ -327,7 +459,6 @@
     </div>
 
     <script>
-        // ===== ОТПРАВКА КОМАНД =====
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
@@ -339,20 +470,34 @@
 
         function sendCommand(cmd) {
             let text = '';
-            switch(cmd) {
-                case 'balance': text = '💰 Баланс'; break;
-                case 'report': text = '📊 Отчёт'; break;
-                case 'history': text = '📋 История'; break;
-                case 'excel': text = '📤 Выгрузка в Excel'; break;
-                case 'reset_confirm': text = '✅ Да, удалить всё'; break;
-                case 'stats': text = '📊 Статистика'; break;
-                case 'delete_budget': text = '🗑️ Удалить лимит'; break;
-                default: text = cmd;
+            switch (cmd) {
+                case 'balance':
+                    text = '💰 Баланс';
+                    break;
+                case 'report':
+                    text = '📊 Отчёт';
+                    break;
+                case 'history':
+                    text = '📋 История';
+                    break;
+                case 'excel':
+                    text = '📤 Выгрузка в Excel';
+                    break;
+                case 'reset_confirm':
+                    text = '✅ Да, удалить всё';
+                    break;
+                case 'stats':
+                    text = '📊 Статистика';
+                    break;
+                case 'delete_budget':
+                    text = '🗑️ Удалить лимит';
+                    break;
+                default:
+                    text = cmd;
             }
             sendToBot(text);
         }
 
-        // ===== ДОХОД =====
         function sendIncome() {
             const amount = document.getElementById('incomeAmountInput').value;
             const category = document.getElementById('incomeCategory').value;
@@ -365,7 +510,6 @@
             sendToBot(text);
         }
 
-        // ===== РАСХОД =====
         function sendExpense() {
             const amount = document.getElementById('expenseAmountInput').value;
             const category = document.getElementById('expenseCategory').value;
@@ -378,7 +522,6 @@
             sendToBot(text);
         }
 
-        // ===== БЮДЖЕТ =====
         function sendBudget() {
             const amount = document.getElementById('budgetAmount').value;
             const category = document.getElementById('budgetCategory').value;
@@ -390,7 +533,6 @@
             sendToBot(text);
         }
 
-        // ===== ДОНАТ =====
         function sendDonate() {
             const amount = document.getElementById('donateAmount').value;
             if (!amount || parseInt(amount) <= 0) {
@@ -401,7 +543,6 @@
             sendToBot(text);
         }
 
-        // ===== ОТЗЫВ =====
         function sendReview() {
             const text = document.getElementById('reviewText').value;
             if (!text) {
@@ -411,7 +552,6 @@
             sendToBot(`Отзыв: ${text}`);
         }
 
-        // ===== НАВИГАЦИЯ =====
         function showSection(section) {
             const sections = ['main', 'income', 'expense', 'budget', 'donate', 'review', 'help', 'reset'];
             sections.forEach(id => {
@@ -435,13 +575,11 @@
             }
         }
 
-        // ===== АДМИН-КНОПКА =====
         const chatId = tg.initDataUnsafe?.user?.id;
         if (chatId == 7461823442) {
             document.getElementById('adminSection').style.display = 'block';
         }
 
-        // ===== ПОКАЗ ГЛАВНОГО ЭКРАНА =====
         document.addEventListener('DOMContentLoaded', function() {
             showSection('main');
         });
