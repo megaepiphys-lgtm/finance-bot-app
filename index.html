@@ -6,15 +6,13 @@
     <title>Финансовый помощник</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* ===== ОБЩИЙ СТИЛЬ ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
-            font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -25,8 +23,6 @@
             position: relative;
             overflow-x: hidden;
         }
-
-        /* ===== ФОН С МОНЕТАМИ И ГРАФИКАМИ ===== */
         .bg-pattern {
             position: fixed;
             top: 0;
@@ -37,7 +33,6 @@
             z-index: 0;
             overflow: hidden;
         }
-
         .coin {
             position: absolute;
             border-radius: 50%;
@@ -46,7 +41,6 @@
             box-shadow: 0 0 40px rgba(255, 215, 0, 0.03);
             animation: floatCoin 12s ease-in-out infinite alternate;
         }
-
         .coin:nth-child(1) {
             width: 80px;
             height: 80px;
@@ -86,7 +80,6 @@
             animation-duration: 12s;
             animation-delay: 3s;
         }
-
         @keyframes floatCoin {
             0% {
                 transform: translate(0, 0) scale(1);
@@ -95,7 +88,6 @@
                 transform: translate(20px, -30px) scale(1.1);
             }
         }
-
         .graph-line {
             position: absolute;
             border: 2px solid rgba(76, 175, 132, 0.08);
@@ -105,7 +97,6 @@
             transform: rotate(-10deg);
             animation: waveGraph 20s ease-in-out infinite alternate;
         }
-
         .graph-line:nth-child(6) {
             top: 20%;
             right: -10%;
@@ -114,7 +105,6 @@
             width: 350px;
             height: 150px;
         }
-
         .graph-line:nth-child(7) {
             bottom: 15%;
             left: -5%;
@@ -125,7 +115,6 @@
             height: 100px;
             transform: rotate(5deg);
         }
-
         @keyframes waveGraph {
             0% {
                 transform: translateX(0) rotate(-10deg) scaleY(1);
@@ -134,8 +123,6 @@
                 transform: translateX(30px) rotate(-6deg) scaleY(1.2);
             }
         }
-
-        /* ===== КОНТЕНТ ===== */
         #app {
             max-width: 420px;
             width: 100%;
@@ -143,8 +130,6 @@
             position: relative;
             z-index: 1;
         }
-
-        /* ===== КАРТОЧКА БАЛАНСА ===== */
         .balance-card {
             background: linear-gradient(145deg, #202736, #131a26);
             border-radius: 28px;
@@ -155,7 +140,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .balance-card::before {
             content: '';
             position: absolute;
@@ -167,7 +151,6 @@
             border-radius: 50%;
             pointer-events: none;
         }
-
         .balance-label {
             font-size: 13px;
             text-transform: uppercase;
@@ -175,7 +158,6 @@
             color: #9aa4b8;
             font-weight: 600;
         }
-
         .balance-amount {
             font-size: 38px;
             font-weight: 700;
@@ -184,7 +166,6 @@
             letter-spacing: 0.5px;
             text-shadow: 0 0 20px rgba(245, 200, 66, 0.15);
         }
-
         .balance-details {
             display: flex;
             justify-content: space-between;
@@ -194,27 +175,21 @@
             padding-top: 14px;
             margin-top: 6px;
         }
-
         .balance-details span {
             color: #fff;
         }
-
         .balance-details .income {
             color: #4caf84;
         }
-
         .balance-details .expense {
             color: #ef6b6b;
         }
-
-        /* ===== КНОПКИ ===== */
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin-bottom: 12px;
         }
-
         .btn {
             background: #1e2638;
             border: none;
@@ -231,48 +206,40 @@
             line-height: 1.3;
             position: relative;
         }
-
         .btn:active {
             transform: translateY(4px);
             box-shadow: 0 2px 0 #0f131e;
         }
-
         .btn .emoji {
             font-size: 22px;
             display: block;
             margin-bottom: 4px;
         }
-
         .btn-primary {
             background: #1e4a3a;
             box-shadow: 0 6px 0 #0f2a20, 0 8px 20px rgba(0, 0, 0, 0.5);
             border-color: rgba(76, 175, 132, 0.2);
         }
-
         .btn-danger {
             background: #5a2626;
             box-shadow: 0 6px 0 #331414, 0 8px 20px rgba(0, 0, 0, 0.5);
             border-color: rgba(239, 107, 107, 0.15);
         }
-
         .btn-accent {
             background: #1a2a5e;
             box-shadow: 0 6px 0 #0e1a3a, 0 8px 20px rgba(0, 0, 0, 0.5);
             border-color: rgba(100, 130, 255, 0.15);
         }
-
         .btn-gold {
             background: #7a621a;
             box-shadow: 0 6px 0 #4a3b0e, 0 8px 20px rgba(0, 0, 0, 0.5);
             border-color: rgba(255, 215, 0, 0.2);
         }
-
         .btn-admin {
             background: #3a1f5e;
             box-shadow: 0 6px 0 #1f0f33, 0 8px 20px rgba(0, 0, 0, 0.5);
             border-color: rgba(180, 100, 255, 0.15);
         }
-
         .input-group {
             background: #141b28;
             border-radius: 18px;
@@ -281,7 +248,6 @@
             border: 1px solid #2a3448;
             box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
         }
-
         .input-group label {
             font-size: 12px;
             color: #8a96b0;
@@ -290,7 +256,6 @@
             font-weight: 500;
             letter-spacing: 0.3px;
         }
-
         .input-group input,
         .input-group select {
             width: 100%;
@@ -300,25 +265,20 @@
             font-size: 16px;
             outline: none;
         }
-
         .input-group input::placeholder {
             color: #4a5670;
         }
-
         .input-group select option {
             background: #141b28;
         }
-
         .section {
             display: none;
             margin-top: 10px;
             animation: fadeUp 0.25s ease;
         }
-
         .section.active {
             display: block;
         }
-
         @keyframes fadeUp {
             0% {
                 opacity: 0;
@@ -329,7 +289,6 @@
                 transform: translateY(0);
             }
         }
-
         .back-btn {
             background: transparent;
             border: none;
@@ -340,11 +299,9 @@
             font-weight: 500;
             transition: 0.2s;
         }
-
         .back-btn:hover {
             color: #fff;
         }
-
         .info-text {
             background: #141b28;
             border-radius: 18px;
@@ -355,11 +312,9 @@
             line-height: 1.6;
             border: 1px solid #2a3448;
         }
-
         .info-text strong {
             color: #f5c842;
         }
-
         .footer-text {
             text-align: center;
             font-size: 12px;
@@ -367,7 +322,6 @@
             margin-top: 28px;
             letter-spacing: 0.3px;
         }
-
         h3 {
             font-weight: 600;
             font-size: 20px;
@@ -375,7 +329,6 @@
             color: #f0f4ff;
             letter-spacing: -0.3px;
         }
-
         @media (max-width: 400px) {
             .balance-amount {
                 font-size: 30px;
@@ -388,7 +341,6 @@
     </style>
 </head>
 <body>
-    <!-- ===== ФОН ===== -->
     <div class="bg-pattern">
         <div class="coin"></div>
         <div class="coin"></div>
@@ -584,9 +536,36 @@
         tg.ready();
         tg.expand();
 
+        const BOT_TOKEN = '8283410159:AAEMCfnK6VNI3Ig8Aj2sfO3tpCSKop6Z6N0'; // ВРЕМЕННО!
+
         function sendToBot(text) {
-            tg.sendData(text);
-            alert('✅ Команда отправлена боту! Ответ придёт в Telegram.');
+            const chatId = tg.initDataUnsafe?.user?.id;
+            if (!chatId) {
+                alert('❌ Не удалось определить chat_id');
+                return;
+            }
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            const payload = {
+                chat_id: chatId,
+                text: text
+            };
+
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    alert('✅ Команда отправлена боту!');
+                } else {
+                    alert('❌ Ошибка: ' + data.description);
+                }
+            })
+            .catch(error => {
+                alert('⚠️ Ошибка сети: ' + error);
+            });
         }
 
         function sendCommand(cmd) {
