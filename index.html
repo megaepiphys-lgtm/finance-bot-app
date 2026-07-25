@@ -536,35 +536,25 @@
         tg.ready();
         tg.expand();
 
-        const BOT_TOKEN = '8283410159:AAEMCfnK6VNI3Ig8Aj2sfO3tpCSKop6Z6N0'; // ВРЕМЕННО!
-
+        // ===== ОТПРАВКА НА СЕРВЕР =====
         function sendToBot(text) {
             const chatId = tg.initDataUnsafe?.user?.id;
             if (!chatId) {
                 alert('❌ Не удалось определить chat_id');
                 return;
             }
-            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-            const payload = {
-                chat_id: chatId,
-                text: text
-            };
 
-            fetch(url, {
+            fetch('https://finance-bot-ldes.onrender.com/webhook', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({ chat_id: chatId, text: text })
             })
             .then(response => response.json())
             .then(data => {
-                if (data.ok) {
-                    alert('✅ Команда отправлена боту!');
-                } else {
-                    alert('❌ Ошибка: ' + data.description);
-                }
+                alert('✅ Команда отправлена на сервер');
             })
             .catch(error => {
-                alert('⚠️ Ошибка сети: ' + error);
+                alert('⚠️ Ошибка: ' + error);
             });
         }
 
