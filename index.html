@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Финансовый помощник</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -12,350 +12,115 @@
             box-sizing: border-box;
         }
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            min-height: 100vh;
+            font-family: sans-serif;
+            background: #121212;
+            color: #fff;
+            padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            padding: 20px 16px;
-            background: radial-gradient(circle at 20% 30%, #1a1f2e, #0b0d14);
-            color: #fff;
-            position: relative;
-            overflow-x: hidden;
-        }
-        .bg-pattern {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-        .coin {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.05));
-            border: 1px solid rgba(255, 215, 0, 0.10);
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.03);
-            animation: floatCoin 12s ease-in-out infinite alternate;
-        }
-        .coin:nth-child(1) {
-            width: 80px;
-            height: 80px;
-            top: 5%;
-            left: -10%;
-            animation-duration: 14s;
-        }
-        .coin:nth-child(2) {
-            width: 120px;
-            height: 120px;
-            bottom: 10%;
-            right: -15%;
-            animation-duration: 18s;
-            animation-delay: 2s;
-        }
-        .coin:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            top: 40%;
-            left: 70%;
-            animation-duration: 10s;
-            animation-delay: 4s;
-        }
-        .coin:nth-child(4) {
-            width: 100px;
-            height: 100px;
-            bottom: 30%;
-            left: -5%;
-            animation-duration: 16s;
-            animation-delay: 1s;
-        }
-        .coin:nth-child(5) {
-            width: 70px;
-            height: 70px;
-            top: 70%;
-            right: 5%;
-            animation-duration: 12s;
-            animation-delay: 3s;
-        }
-        @keyframes floatCoin {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-            100% {
-                transform: translate(20px, -30px) scale(1.1);
-            }
-        }
-        .graph-line {
-            position: absolute;
-            border: 2px solid rgba(76, 175, 132, 0.08);
-            border-radius: 100px;
-            width: 300px;
-            height: 120px;
-            transform: rotate(-10deg);
-            animation: waveGraph 20s ease-in-out infinite alternate;
-        }
-        .graph-line:nth-child(6) {
-            top: 20%;
-            right: -10%;
-            border-color: rgba(255, 215, 0, 0.06);
-            animation-duration: 22s;
-            width: 350px;
-            height: 150px;
-        }
-        .graph-line:nth-child(7) {
-            bottom: 15%;
-            left: -5%;
-            border-color: rgba(100, 200, 255, 0.05);
-            animation-duration: 18s;
-            animation-delay: 3s;
-            width: 280px;
-            height: 100px;
-            transform: rotate(5deg);
-        }
-        @keyframes waveGraph {
-            0% {
-                transform: translateX(0) rotate(-10deg) scaleY(1);
-            }
-            100% {
-                transform: translateX(30px) rotate(-6deg) scaleY(1.2);
-            }
         }
         #app {
-            max-width: 420px;
+            max-width: 400px;
             width: 100%;
-            padding-bottom: 40px;
-            position: relative;
-            z-index: 1;
         }
         .balance-card {
-            background: linear-gradient(145deg, #202736, #131a26);
-            border-radius: 28px;
-            padding: 24px 22px;
-            margin-bottom: 28px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 215, 0, 0.15);
-            border: 1px solid rgba(255, 215, 0, 0.15);
-            position: relative;
-            overflow: hidden;
-        }
-        .balance-card::before {
-            content: '';
-            position: absolute;
-            top: -30%;
-            right: -20%;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.06), transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-        .balance-label {
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #9aa4b8;
-            font-weight: 600;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
         }
         .balance-amount {
-            font-size: 38px;
-            font-weight: 700;
+            font-size: 32px;
+            font-weight: bold;
             color: #f5c842;
-            margin: 6px 0 8px;
-            letter-spacing: 0.5px;
-            text-shadow: 0 0 20px rgba(245, 200, 66, 0.15);
         }
         .balance-details {
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
-            color: #b0bcca;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 14px;
-            margin-top: 6px;
+            margin-top: 10px;
         }
-        .balance-details span {
-            color: #fff;
+        .income {
+            color: #4caf50;
         }
-        .balance-details .income {
-            color: #4caf84;
-        }
-        .balance-details .expense {
-            color: #ef6b6b;
+        .expense {
+            color: #ef5350;
         }
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 12px;
+            gap: 10px;
         }
         .btn {
-            background: #1e2638;
+            background: #1e1e1e;
             border: none;
-            border-radius: 18px;
-            padding: 18px 8px;
-            font-size: 15px;
-            font-weight: 600;
-            color: #f0f4ff;
+            border-radius: 12px;
+            padding: 14px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
             cursor: pointer;
-            transition: 0.12s ease;
-            box-shadow: 0 6px 0 #0f131e, 0 8px 20px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            text-align: center;
-            line-height: 1.3;
-            position: relative;
         }
         .btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 #0f131e;
-        }
-        .btn .emoji {
-            font-size: 22px;
-            display: block;
-            margin-bottom: 4px;
+            background: #2a2a2a;
         }
         .btn-primary {
-            background: #1e4a3a;
-            box-shadow: 0 6px 0 #0f2a20, 0 8px 20px rgba(0, 0, 0, 0.5);
-            border-color: rgba(76, 175, 132, 0.2);
+            background: #2e7d32;
         }
         .btn-danger {
-            background: #5a2626;
-            box-shadow: 0 6px 0 #331414, 0 8px 20px rgba(0, 0, 0, 0.5);
-            border-color: rgba(239, 107, 107, 0.15);
-        }
-        .btn-accent {
-            background: #1a2a5e;
-            box-shadow: 0 6px 0 #0e1a3a, 0 8px 20px rgba(0, 0, 0, 0.5);
-            border-color: rgba(100, 130, 255, 0.15);
+            background: #c62828;
         }
         .btn-gold {
-            background: #7a621a;
-            box-shadow: 0 6px 0 #4a3b0e, 0 8px 20px rgba(0, 0, 0, 0.5);
-            border-color: rgba(255, 215, 0, 0.2);
-        }
-        .btn-admin {
-            background: #3a1f5e;
-            box-shadow: 0 6px 0 #1f0f33, 0 8px 20px rgba(0, 0, 0, 0.5);
-            border-color: rgba(180, 100, 255, 0.15);
+            background: #b8860b;
         }
         .input-group {
-            background: #141b28;
-            border-radius: 18px;
-            padding: 14px 18px;
-            margin-bottom: 14px;
-            border: 1px solid #2a3448;
-            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+            background: #1a1a1a;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 12px;
         }
         .input-group label {
-            font-size: 12px;
-            color: #8a96b0;
             display: block;
-            margin-bottom: 4px;
-            font-weight: 500;
-            letter-spacing: 0.3px;
+            font-size: 12px;
+            color: #aaa;
         }
         .input-group input,
         .input-group select {
             width: 100%;
             background: transparent;
             border: none;
-            color: #f0f4ff;
+            color: #fff;
             font-size: 16px;
             outline: none;
         }
-        .input-group input::placeholder {
-            color: #4a5670;
-        }
-        .input-group select option {
-            background: #141b28;
-        }
         .section {
             display: none;
-            margin-top: 10px;
-            animation: fadeUp 0.25s ease;
         }
         .section.active {
             display: block;
         }
-        @keyframes fadeUp {
-            0% {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
         .back-btn {
-            background: transparent;
+            background: none;
             border: none;
-            color: #8a96b0;
+            color: #aaa;
             font-size: 14px;
-            padding: 8px 0 16px;
+            padding: 10px 0;
             cursor: pointer;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-        .back-btn:hover {
-            color: #fff;
-        }
-        .info-text {
-            background: #141b28;
-            border-radius: 18px;
-            padding: 18px;
-            margin: 14px 0;
-            font-size: 14px;
-            color: #c8d0e0;
-            line-height: 1.6;
-            border: 1px solid #2a3448;
-        }
-        .info-text strong {
-            color: #f5c842;
         }
         .footer-text {
             text-align: center;
+            margin-top: 20px;
             font-size: 12px;
-            color: #3d4a60;
-            margin-top: 28px;
-            letter-spacing: 0.3px;
-        }
-        h3 {
-            font-weight: 600;
-            font-size: 20px;
-            margin-bottom: 16px;
-            color: #f0f4ff;
-            letter-spacing: -0.3px;
-        }
-        @media (max-width: 400px) {
-            .balance-amount {
-                font-size: 30px;
-            }
-            .btn {
-                font-size: 13px;
-                padding: 14px 6px;
-            }
+            color: #555;
         }
     </style>
 </head>
 <body>
-    <div class="bg-pattern">
-        <div class="coin"></div>
-        <div class="coin"></div>
-        <div class="coin"></div>
-        <div class="coin"></div>
-        <div class="coin"></div>
-        <div class="graph-line"></div>
-        <div class="graph-line"></div>
-    </div>
-
     <div id="app">
         <!-- ГЛАВНЫЙ ЭКРАН -->
-        <div id="mainScreen">
+        <div id="mainScreen" class="active">
             <div class="balance-card">
-                <div class="balance-label">💰 Баланс</div>
+                <div>💰 Баланс</div>
                 <div class="balance-amount" id="balanceAmount">0 ₽</div>
                 <div class="balance-details">
                     <span>↗️ Доходы: <span class="income" id="incomeAmount">0 ₽</span></span>
@@ -368,19 +133,12 @@
                 <button class="btn btn-danger" onclick="showSection('expense')">➖ Расход</button>
                 <button class="btn" onclick="sendCommand('balance')">💰 Баланс</button>
                 <button class="btn" onclick="sendCommand('report')">📊 Отчёт</button>
-                <button class="btn" onclick="showSection('budget')">📈 Бюджет</button>
                 <button class="btn" onclick="sendCommand('history')">📋 История</button>
                 <button class="btn" onclick="sendCommand('excel')">📤 Excel</button>
-                <button class="btn btn-gold" onclick="showSection('donate')">⭐ Донат</button>
-                <button class="btn" onclick="showSection('review')">💬 Отзыв</button>
-                <button class="btn" onclick="showSection('help')">❓ Инструкция</button>
-                <button class="btn btn-danger" onclick="showSection('reset')">🗑️ Сброс</button>
+                <button class="btn btn-gold" onclick="sendCommand('donate')">⭐ Донат</button>
+                <button class="btn" onclick="sendCommand('review')">💬 Отзыв</button>
+                <button class="btn" onclick="sendCommand('help')">❓ Помощь</button>
             </div>
-
-            <div id="adminSection" style="display:none; margin-top: 14px;">
-                <button class="btn btn-admin" onclick="sendCommand('stats')">📊 Статистика</button>
-            </div>
-
             <div class="footer-text">Нажми на кнопку — бот ответит в Telegram</div>
         </div>
 
@@ -397,16 +155,12 @@
                 <select id="incomeCategory">
                     <option value="💰 Зарплата">💰 Зарплата</option>
                     <option value="💼 Фриланс">💼 Фриланс</option>
-                    <option value="🎁 Подарок">🎁 Подарок</option>
-                    <option value="📈 Инвестиции">📈 Инвестиции</option>
-                    <option value="🏦 Проценты">🏦 Проценты</option>
-                    <option value="🔄 Возврат">🔄 Возврат</option>
                     <option value="💰 Другое">💰 Другое</option>
                 </select>
             </div>
             <div class="input-group">
-                <label>Описание (необязательно)</label>
-                <input type="text" id="incomeDesc" placeholder="Например: зарплата за май" />
+                <label>Описание</label>
+                <input type="text" id="incomeDesc" placeholder="Необязательно" />
             </div>
             <button class="btn btn-primary" onclick="sendIncome()">✅ Сохранить доход</button>
         </div>
@@ -424,110 +178,14 @@
                 <select id="expenseCategory">
                     <option value="🍔 Еда">🍔 Еда</option>
                     <option value="🚇 Транспорт">🚇 Транспорт</option>
-                    <option value="🏠 ЖКХ">🏠 ЖКХ</option>
-                    <option value="🛍️ Покупки">🛍️ Покупки</option>
-                    <option value="💊 Здоровье">💊 Здоровье</option>
-                    <option value="🎉 Развлечения">🎉 Развлечения</option>
-                    <option value="📱 Связь">📱 Связь</option>
-                    <option value="👕 Одежда">👕 Одежда</option>
-                    <option value="📚 Образование">📚 Образование</option>
                     <option value="💰 Другое">💰 Другое</option>
                 </select>
             </div>
             <div class="input-group">
-                <label>Описание (необязательно)</label>
-                <input type="text" id="expenseDesc" placeholder="Например: обед" />
+                <label>Описание</label>
+                <input type="text" id="expenseDesc" placeholder="Необязательно" />
             </div>
             <button class="btn btn-danger" onclick="sendExpense()">✅ Сохранить расход</button>
-        </div>
-
-        <!-- БЮДЖЕТ -->
-        <div id="budgetSection" class="section">
-            <button class="back-btn" onclick="showSection('main')">← Назад</button>
-            <h3>📈 Бюджет</h3>
-            <div class="input-group">
-                <label>Категория</label>
-                <select id="budgetCategory">
-                    <option value="🍔 Еда">🍔 Еда</option>
-                    <option value="🚇 Транспорт">🚇 Транспорт</option>
-                    <option value="🏠 ЖКХ">🏠 ЖКХ</option>
-                    <option value="🛍️ Покупки">🛍️ Покупки</option>
-                    <option value="💊 Здоровье">💊 Здоровье</option>
-                    <option value="🎉 Развлечения">🎉 Развлечения</option>
-                    <option value="📱 Связь">📱 Связь</option>
-                    <option value="👕 Одежда">👕 Одежда</option>
-                    <option value="📚 Образование">📚 Образование</option>
-                    <option value="💰 Другое">💰 Другое</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label>Лимит (₽)</label>
-                <input type="number" id="budgetAmount" placeholder="Например: 10000" />
-            </div>
-            <button class="btn btn-accent" onclick="sendBudget()">✅ Установить бюджет</button>
-            <button class="btn" onclick="sendCommand('delete_budget')" style="margin-top: 10px;">🗑️ Удалить лимит</button>
-        </div>
-
-        <!-- ДОНАТ -->
-        <div id="donateSection" class="section">
-            <button class="back-btn" onclick="showSection('main')">← Назад</button>
-            <h3>⭐ Донат</h3>
-            <div class="info-text">Поддержи разработчика!<br/>Напиши сумму в Stars (например, 10, 25, 50).</div>
-            <div class="input-group">
-                <label>Сумма (Stars)</label>
-                <input type="number" id="donateAmount" placeholder="Например: 25" />
-            </div>
-            <button class="btn btn-gold" onclick="sendDonate()">⭐ Отправить донат</button>
-        </div>
-
-        <!-- ОТЗЫВ -->
-        <div id="reviewSection" class="section">
-            <button class="back-btn" onclick="showSection('main')">← Назад</button>
-            <h3>💬 Отзыв</h3>
-            <div class="info-text">Напиши своё мнение о боте. Спасибо! 🙏</div>
-            <div class="input-group">
-                <label>Текст отзыва</label>
-                <input type="text" id="reviewText" placeholder="Ваш отзыв..." />
-            </div>
-            <button class="btn" onclick="sendReview()">✅ Отправить отзыв</button>
-        </div>
-
-        <!-- ИНСТРУКЦИЯ -->
-        <div id="helpSection" class="section">
-            <button class="back-btn" onclick="showSection('main')">← Назад</button>
-            <h3>❓ Инструкция</h3>
-            <div class="info-text">
-                <strong>💰 Как добавить доход:</strong><br/>
-                Нажми «Доход» → выбери категорию → введи сумму → описание (необязательно).<br/><br/>
-                <strong>💸 Как добавить расход:</strong><br/>
-                Нажми «Расход» → выбери категорию → введи сумму → описание (необязательно).<br/><br/>
-                <strong>📈 Бюджет:</strong><br/>
-                Установи лимит на категорию — бот предупредит о превышении.<br/><br/>
-                <strong>📊 Отчёт:</strong><br/>
-                Покажет доходы и расходы за месяц по категориям.<br/><br/>
-                <strong>📤 Excel:</strong><br/>
-                Выгрузи все операции в файл.<br/><br/>
-                <strong>⭐ Донат:</strong><br/>
-                Поддержи разработчика через Telegram Stars.<br/><br/>
-                <strong>💬 Отзыв:</strong><br/>
-                Напиши своё мнение — бот отправит его разработчику.<br/><br/>
-                <strong>🗑️ Сброс:</strong><br/>
-                Удаляет все твои данные (доходы, расходы, бюджеты).<br/><br/>
-                <strong>📊 Статистика:</strong><br/>
-                Доступна только администратору.
-            </div>
-        </div>
-
-        <!-- СБРОС -->
-        <div id="resetSection" class="section">
-            <button class="back-btn" onclick="showSection('main')">← Назад</button>
-            <h3>⚠️ Сброс данных</h3>
-            <div class="info-text" style="border-color: #b33;">
-                <strong>ВНИМАНИЕ!</strong><br/>
-                Это действие удалит все твои доходы, расходы и бюджеты.<br/>
-                <strong>Отменить нельзя!</strong>
-            </div>
-            <button class="btn btn-danger" onclick="sendCommand('reset_confirm')">🗑️ Удалить всё</button>
         </div>
     </div>
 
@@ -538,130 +196,75 @@
 
         const SERVER_URL = 'https://finance-bot-ldes.onrender.com';
 
-        // ===== ОБНОВЛЕНИЕ БАЛАНСА =====
         function updateBalance() {
             const chatId = tg.initDataUnsafe?.user?.id;
             if (!chatId) return;
-
             fetch(`${SERVER_URL}/balance?chat_id=${chatId}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('balanceAmount').textContent = data.balance + ' ₽';
-                    document.getElementById('incomeAmount').textContent = data.income + ' ₽';
-                    document.getElementById('expenseAmount').textContent = data.expense + ' ₽';
+                .then(r => r.json())
+                .then(d => {
+                    document.getElementById('balanceAmount').textContent = d.balance + ' ₽';
+                    document.getElementById('incomeAmount').textContent = d.income + ' ₽';
+                    document.getElementById('expenseAmount').textContent = d.expense + ' ₽';
                 })
-                .catch(error => console.error('Ошибка загрузки баланса:', error));
+                .catch(() => {});
         }
 
-        // ===== ОТПРАВКА КОМАНДЫ НА СЕРВЕР =====
         function sendToBot(text) {
             const chatId = tg.initDataUnsafe?.user?.id;
             if (!chatId) {
-                alert('❌ Не удалось определить chat_id');
+                alert('❌ Ошибка: нет chat_id');
                 return;
             }
-
             fetch(`${SERVER_URL}/webhook`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ chat_id: chatId, text: text })
             })
-            .then(response => response.json())
-            .then(data => {
-                alert('✅ Команда отправлена на сервер');
-                updateBalance(); // Обновляем баланс после операции
+            .then(r => r.json())
+            .then(() => {
+                alert('✅ Команда отправлена');
+                updateBalance();
             })
-            .catch(error => {
-                alert('⚠️ Ошибка: ' + error);
-            });
+            .catch(() => alert('❌ Ошибка отправки'));
         }
 
-        // ===== КОМАНДЫ =====
         function sendCommand(cmd) {
-            let text = '';
-            switch (cmd) {
-                case 'balance': text = '💰 Баланс'; break;
-                case 'report': text = '📊 Отчёт'; break;
-                case 'history': text = '📋 История'; break;
-                case 'excel': text = '📤 Выгрузка в Excel'; break;
-                case 'reset_confirm': text = '✅ Да, удалить всё'; break;
-                case 'stats': text = '📊 Статистика'; break;
-                case 'delete_budget': text = '🗑️ Удалить лимит'; break;
-                default: text = cmd;
-            }
-            sendToBot(text);
+            const map = {
+                balance: '💰 Баланс',
+                report: '📊 Отчёт',
+                history: '📋 История',
+                excel: '📤 Выгрузка в Excel',
+                donate: '⭐ Донат 10',
+                review: '💬 Отзыв',
+                help: '❓ Инструкция'
+            };
+            sendToBot(map[cmd] || cmd);
         }
 
-        // ===== ДОХОД =====
         function sendIncome() {
             const amount = document.getElementById('incomeAmountInput').value;
             const category = document.getElementById('incomeCategory').value;
             const desc = document.getElementById('incomeDesc').value;
-            if (!amount || parseFloat(amount) <= 0) {
-                alert('Введите сумму');
-                return;
-            }
-            const text = `Доход ${amount} ${category}${desc ? ' ' + desc : ''}`;
-            sendToBot(text);
+            if (!amount || amount <= 0) return alert('Введите сумму');
+            sendToBot(`Доход ${amount} ${category}${desc ? ' ' + desc : ''}`);
         }
 
-        // ===== РАСХОД =====
         function sendExpense() {
             const amount = document.getElementById('expenseAmountInput').value;
             const category = document.getElementById('expenseCategory').value;
             const desc = document.getElementById('expenseDesc').value;
-            if (!amount || parseFloat(amount) <= 0) {
-                alert('Введите сумму');
-                return;
-            }
-            const text = `Расход ${amount} ${category}${desc ? ' ' + desc : ''}`;
-            sendToBot(text);
+            if (!amount || amount <= 0) return alert('Введите сумму');
+            sendToBot(`Расход ${amount} ${category}${desc ? ' ' + desc : ''}`);
         }
 
-        // ===== БЮДЖЕТ =====
-        function sendBudget() {
-            const amount = document.getElementById('budgetAmount').value;
-            const category = document.getElementById('budgetCategory').value;
-            if (!amount || parseFloat(amount) <= 0) {
-                alert('Введите сумму бюджета');
-                return;
-            }
-            const text = `Бюджет ${category} ${amount}`;
-            sendToBot(text);
-        }
-
-        // ===== ДОНАТ =====
-        function sendDonate() {
-            const amount = document.getElementById('donateAmount').value;
-            if (!amount || parseInt(amount) <= 0) {
-                alert('Введите сумму в Stars');
-                return;
-            }
-            const text = `⭐ Донат ${amount}`;
-            sendToBot(text);
-        }
-
-        // ===== ОТЗЫВ =====
-        function sendReview() {
-            const text = document.getElementById('reviewText').value;
-            if (!text) {
-                alert('Напишите текст отзыва');
-                return;
-            }
-            sendToBot(`Отзыв: ${text}`);
-        }
-
-        // ===== НАВИГАЦИЯ =====
         function showSection(section) {
-            const sections = ['main', 'income', 'expense', 'budget', 'donate', 'review', 'help', 'reset'];
-            sections.forEach(id => {
+            ['main', 'income', 'expense'].forEach(id => {
                 const el = document.getElementById(id + 'Section') || document.getElementById(id + 'Screen');
                 if (el) {
                     el.classList.remove('active');
                     el.style.display = 'none';
                 }
             });
-
             if (section === 'main') {
                 const main = document.getElementById('mainScreen');
                 main.style.display = 'block';
@@ -675,14 +278,9 @@
             }
         }
 
-        const chatId = tg.initDataUnsafe?.user?.id;
-        if (chatId == 7461823442) {
-            document.getElementById('adminSection').style.display = 'block';
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
             showSection('main');
-            updateBalance(); // Загружаем баланс при открытии
+            updateBalance();
         });
     </script>
 </body>
