@@ -173,6 +173,7 @@
 
         // Обновление баланса
         function updateBalance() {
+            alert('updateBalance вызвана!');
             const chatId = tg.initDataUnsafe?.user?.id;
             if (!chatId) return;
             fetch(`${SERVER_URL}/balance?chat_id=${chatId}`)
