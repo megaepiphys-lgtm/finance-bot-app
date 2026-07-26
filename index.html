@@ -6,38 +6,48 @@
     <title>Финансовый помощник</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: sans-serif;
             background: #121212;
-            color: white;
+            color: #fff;
             padding: 20px;
             display: flex;
             justify-content: center;
+            min-height: 100vh;
         }
         #app {
             max-width: 400px;
             width: 100%;
         }
-        .card {
+        .balance-card {
             background: #1e1e1e;
             padding: 20px;
             border-radius: 16px;
             text-align: center;
             margin-bottom: 20px;
         }
-        .balance {
+        .balance-amount {
             font-size: 32px;
             font-weight: bold;
             color: #f5c842;
         }
-        .row {
+        .balance-details {
             display: flex;
             justify-content: space-between;
             margin-top: 10px;
         }
-        .income { color: #4caf50; }
-        .expense { color: #ef5350; }
-        .grid {
+        .income {
+            color: #4caf50;
+        }
+        .expense {
+            color: #ef5350;
+        }
+        .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
@@ -47,14 +57,27 @@
             border: none;
             border-radius: 12px;
             padding: 14px;
-            color: white;
+            color: #fff;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
+            transition: 0.1s;
         }
-        .btn:active { background: #2a2a2a; }
-        .btn-green { background: #2e7d32; }
-        .btn-red { background: #c62828; }
-        .btn-gold { background: #b8860b; }
+        .btn:active {
+            background: #2a2a2a;
+        }
+        .btn-green {
+            background: #2e7d32;
+        }
+        .btn-red {
+            background: #c62828;
+        }
+        .btn-gold {
+            background: #b8860b;
+        }
+        .btn-admin {
+            background: #4a148c;
+        }
         .input-group {
             background: #1a1a1a;
             padding: 12px;
@@ -66,16 +89,21 @@
             font-size: 12px;
             color: #aaa;
         }
-        .input-group input, .input-group select {
+        .input-group input,
+        .input-group select {
             width: 100%;
             background: transparent;
             border: none;
-            color: white;
+            color: #fff;
             font-size: 16px;
             outline: none;
         }
-        .section { display: none; }
-        .section.active { display: block; }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
         .back-btn {
             background: none;
             border: none;
@@ -84,11 +112,29 @@
             padding: 10px 0;
             cursor: pointer;
         }
-        .footer {
+        .footer-text {
             text-align: center;
             margin-top: 20px;
             font-size: 12px;
             color: #555;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            opacity: 0;
+            transition: 0.3s;
+            pointer-events: none;
+            z-index: 999;
+        }
+        .toast.show {
+            opacity: 1;
         }
     </style>
 </head>
@@ -96,25 +142,32 @@
     <div id="app">
         <!-- Главный экран -->
         <div id="mainScreen" class="active">
-            <div class="card">
+            <div class="balance-card">
                 <div>💰 Баланс</div>
-                <div class="balance" id="balanceAmount">0 ₽</div>
-                <div class="row">
+                <div class="balance-amount" id="balanceAmount">0 ₽</div>
+                <div class="balance-details">
                     <span>↗️ Доходы: <span class="income" id="incomeAmount">0 ₽</span></span>
                     <span>↘️ Расходы: <span class="expense" id="expenseAmount">0 ₽</span></span>
                 </div>
             </div>
-            <div class="grid">
+
+            <div class="grid-2">
                 <button class="btn btn-green" onclick="showSection('income')">➕ Доход</button>
                 <button class="btn btn-red" onclick="showSection('expense')">➖ Расход</button>
                 <button class="btn" onclick="sendCommand('balance')">💰 Баланс</button>
                 <button class="btn" onclick="sendCommand('report')">📊 Отчёт</button>
+                <button class="btn" onclick="sendCommand('budget')">📈 Бюджет</button>
                 <button class="btn" onclick="sendCommand('history')">📋 История</button>
                 <button class="btn" onclick="sendCommand('excel')">📤 Excel</button>
                 <button class="btn btn-gold" onclick="sendCommand('donate')">⭐ Донат</button>
                 <button class="btn" onclick="sendCommand('review')">💬 Отзыв</button>
+                <button class="btn" onclick="sendCommand('help')">❓ Инструкция</button>
+                <button class="btn btn-red" onclick="sendCommand('reset')">🗑️ Сброс</button>
+                <div id="adminSection" style="display:none; margin-top: 10px;">
+                    <button class="btn btn-admin" onclick="sendCommand('stats')" style="width:100%;">📊 Статистика</button>
+                </div>
             </div>
-            <div class="footer">Нажми кнопку — бот ответит в Telegram</div>
+            <div class="footer-text">Нажми кнопку — бот ответит в Telegram</div>
         </div>
 
         <!-- Доход -->
@@ -123,19 +176,23 @@
             <h3>💰 Добавить доход</h3>
             <div class="input-group">
                 <label>Сумма</label>
-                <input type="number" id="incomeAmountInput" placeholder="15000" />
+                <input type="number" id="incomeAmountInput" />
             </div>
             <div class="input-group">
                 <label>Категория</label>
                 <select id="incomeCategory">
                     <option>💰 Зарплата</option>
                     <option>💼 Фриланс</option>
+                    <option>🎁 Подарок</option>
+                    <option>📈 Инвестиции</option>
+                    <option>🏦 Проценты</option>
+                    <option>🔄 Возврат</option>
                     <option>💰 Другое</option>
                 </select>
             </div>
             <div class="input-group">
                 <label>Описание</label>
-                <input type="text" id="incomeDesc" placeholder="Необязательно" />
+                <input type="text" id="incomeDesc" />
             </div>
             <button class="btn btn-green" onclick="sendIncome()">✅ Сохранить доход</button>
         </div>
@@ -146,23 +203,33 @@
             <h3>💸 Добавить расход</h3>
             <div class="input-group">
                 <label>Сумма</label>
-                <input type="number" id="expenseAmountInput" placeholder="500" />
+                <input type="number" id="expenseAmountInput" />
             </div>
             <div class="input-group">
                 <label>Категория</label>
                 <select id="expenseCategory">
                     <option>🍔 Еда</option>
                     <option>🚇 Транспорт</option>
+                    <option>🏠 ЖКХ</option>
+                    <option>🛍️ Покупки</option>
+                    <option>💊 Здоровье</option>
+                    <option>🎉 Развлечения</option>
+                    <option>📱 Связь</option>
+                    <option>👕 Одежда</option>
+                    <option>📚 Образование</option>
                     <option>💰 Другое</option>
                 </select>
             </div>
             <div class="input-group">
                 <label>Описание</label>
-                <input type="text" id="expenseDesc" placeholder="Необязательно" />
+                <input type="text" id="expenseDesc" />
             </div>
             <button class="btn btn-red" onclick="sendExpense()">✅ Сохранить расход</button>
         </div>
     </div>
+
+    <!-- Тостер -->
+    <div id="toast" class="toast"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -171,9 +238,14 @@
 
         const SERVER_URL = 'https://finance-bot-ldes.onrender.com';
 
-        // Обновление баланса
+        function showToast(text) {
+            const el = document.getElementById('toast');
+            el.textContent = text;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 1500);
+        }
+
         function updateBalance() {
-            alert('updateBalance вызвана!');
             const chatId = tg.initDataUnsafe?.user?.id;
             if (!chatId) return;
             fetch(`${SERVER_URL}/balance?chat_id=${chatId}`)
@@ -186,10 +258,12 @@
                 .catch(() => {});
         }
 
-        // Отправка команды
         function sendToBot(text) {
             const chatId = tg.initDataUnsafe?.user?.id;
-            if (!chatId) return alert('❌ Ошибка: нет chat_id');
+            if (!chatId) {
+                showToast('❌ Ошибка: нет chat_id');
+                return;
+            }
             fetch(`${SERVER_URL}/webhook`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -197,44 +271,55 @@
             })
             .then(r => r.json())
             .then(() => {
-                alert('✅ Команда отправлена');
+                showToast('✅ Команда отправлена');
                 updateBalance();
+                showSection('main');
             })
-            .catch(() => alert('❌ Ошибка отправки'));
+            .catch(() => showToast('❌ Ошибка отправки'));
         }
 
-        // Команды
         function sendCommand(cmd) {
             const map = {
                 balance: '💰 Баланс',
                 report: '📊 Отчёт',
+                budget: '📈 Бюджет',
                 history: '📋 История',
                 excel: '📤 Выгрузка в Excel',
                 donate: '⭐ Донат 10',
-                review: '💬 Отзыв'
+                review: '💬 Отзыв',
+                help: '❓ Инструкция',
+                reset: '🗑️ Сбросить всё',
+                stats: '📊 Статистика'
             };
             sendToBot(map[cmd] || cmd);
         }
 
-        // Доход
         function sendIncome() {
             const amount = document.getElementById('incomeAmountInput').value;
             const category = document.getElementById('incomeCategory').value;
             const desc = document.getElementById('incomeDesc').value;
-            if (!amount || amount <= 0) return alert('Введите сумму');
+            if (!amount || amount <= 0) {
+                showToast('❌ Введите сумму');
+                return;
+            }
             sendToBot(`Доход ${amount} ${category}${desc ? ' ' + desc : ''}`);
+            document.getElementById('incomeAmountInput').value = '';
+            document.getElementById('incomeDesc').value = '';
         }
 
-        // Расход
         function sendExpense() {
             const amount = document.getElementById('expenseAmountInput').value;
             const category = document.getElementById('expenseCategory').value;
             const desc = document.getElementById('expenseDesc').value;
-            if (!amount || amount <= 0) return alert('Введите сумму');
+            if (!amount || amount <= 0) {
+                showToast('❌ Введите сумму');
+                return;
+            }
             sendToBot(`Расход ${amount} ${category}${desc ? ' ' + desc : ''}`);
+            document.getElementById('expenseAmountInput').value = '';
+            document.getElementById('expenseDesc').value = '';
         }
 
-        // Навигация
         function showSection(section) {
             ['main', 'income', 'expense'].forEach(id => {
                 const el = document.getElementById(id + 'Section') || document.getElementById(id + 'Screen');
@@ -258,7 +343,11 @@
             }
         }
 
-        // Загрузка
+        const chatId = tg.initDataUnsafe?.user?.id;
+        if (chatId == 7461823442) {
+            document.getElementById('adminSection').style.display = 'block';
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             showSection('main');
             updateBalance();
