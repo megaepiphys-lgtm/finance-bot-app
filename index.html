@@ -446,23 +446,9 @@
                 showToast('❌ Введите сумму');
                 return;
             }
-            // Перед отправкой проверяем лимит
-            checkBudgetAndSend(category, amount, desc);
+            sendCommand(`Расход ${amount} ${category}${desc ? ' ' + desc : ''}`);
             document.getElementById('expenseAmountInput').value = '';
             document.getElementById('expenseDesc').value = '';
-        }
-
-        function checkBudgetAndSend(category, amount, desc) {
-            fetch(`${SERVER_URL}/budget_status?chat_id=${chatId}&category=${encodeURIComponent(category)}`)
-                .then(r => r.json())
-                .then(data => {
-                    if (data.limit) {
-                        // Здесь можно проверить превышение, но логика на сервере
-                        // отправляем расход, сервер сам проверит и вернёт уведомление
-                    }
-                    sendCommand(`Расход ${amount} ${category}${desc ? ' ' + desc : ''}`);
-                })
-                .catch(() => sendCommand(`Расход ${amount} ${category}${desc ? ' ' + desc : ''}`));
         }
 
         function sendBudget() {
