@@ -60,6 +60,14 @@
         .btn-red { background: #c62828; }
         .btn-gold { background: #b8860b; }
         .btn-admin { background: #4a148c; }
+        .btn-back {
+            background: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 12px;
+            font-size: 16px;
+            width: 100%;
+        }
         .input-group {
             background: #1a1a1a;
             padding: 12px;
@@ -84,14 +92,6 @@
         }
         .page { display: none; }
         .page.active { display: block; }
-        .back-btn {
-            background: none;
-            border: none;
-            color: #aaa;
-            font-size: 14px;
-            padding: 10px 0;
-            cursor: pointer;
-        }
         .footer {
             text-align: center;
             margin-top: 20px;
@@ -129,10 +129,16 @@
             border-radius: 8px;
             margin-bottom: 6px;
             font-size: 14px;
-            border-left: 3px solid #555;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .history-item.income { border-left-color: #4caf50; }
-        .history-item.expense { border-left-color: #ef5350; }
+        .history-item .arrow {
+            font-size: 18px;
+            margin-right: 8px;
+        }
+        .history-item .arrow.up { color: #4caf50; }
+        .history-item .arrow.down { color: #ef5350; }
         .report-block {
             background: #1a1a1a;
             padding: 16px;
@@ -147,6 +153,12 @@
             padding: 6px 0;
             border-bottom: 1px solid #2a2a2a;
         }
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .btn-container .btn { flex: 1; }
     </style>
 </head>
 <body>
@@ -155,22 +167,21 @@
         <div id="mainPage" class="page active">
             <div class="card">
                 <div>💰 Баланс</div>
-                <div class="balance" id="balanceAmount">0 ₽</div>
+                <div class="balance" id="balanceAmount">0 р.</div>
                 <div class="row">
-                    <span>↗️ Доходы: <span class="income" id="incomeAmount">0 ₽</span></span>
-                    <span>↘️ Расходы: <span class="expense" id="expenseAmount">0 ₽</span></span>
+                    <span>↗️ Доходы: <span class="income" id="incomeAmount">0 р.</span></span>
+                    <span>↘️ Расходы: <span class="expense" id="expenseAmount">0 р.</span></span>
                 </div>
             </div>
             <div class="grid-2">
                 <button class="btn btn-green" onclick="showPage('income')">➕ Доход</button>
                 <button class="btn btn-red" onclick="showPage('expense')">➖ Расход</button>
                 <button class="btn" onclick="showPage('budget')">📈 Бюджет</button>
-                <button class="btn" onclick="showPage('report')">📊 Отчёт</button>
                 <button class="btn" onclick="showPage('history')">📋 История</button>
-                <button class="btn" onclick="sendExcel()">📤 Excel</button>
+                <button class="btn" onclick="sendExcel()">📤 Отчёт / Выгрузка в Excel</button>
                 <button class="btn btn-gold" onclick="showPage('donate')">⭐ Донат</button>
                 <button class="btn" onclick="showPage('review')">💬 Отзыв</button>
-                <button class="btn" onclick="showPage('help')">❓ Инструкция</button>
+                <button class="btn" onclick="showPage('help')">❓ Инструкция пользователя</button>
                 <button class="btn btn-red" onclick="showPage('reset')">🗑️ Сброс</button>
                 <div id="adminSection" style="display:none; grid-column: span 2;">
                     <button class="btn btn-admin" onclick="sendStats()" style="width:100%;">📊 Статистика</button>
@@ -181,7 +192,6 @@
 
         <!-- Доход -->
         <div id="incomePage" class="page">
-            <button class="back-btn" onclick="showPage('main')">← Назад</button>
             <h3>💰 Добавить доход</h3>
             <div class="input-group">
                 <label>Сумма (например, 15000)</label>
@@ -190,25 +200,27 @@
             <div class="input-group">
                 <label>Категория</label>
                 <select id="incomeCategory">
-                    <option value="💰 Зарплата">💰 Зарплата (основная работа)</option>
-                    <option value="💼 Фриланс">💼 Фриланс (проект, заказ)</option>
-                    <option value="🎁 Подарок">🎁 Подарок (деньги на день рождения)</option>
-                    <option value="📈 Инвестиции">📈 Инвестиции (дивиденды)</option>
-                    <option value="🏦 Проценты">🏦 Проценты (банковские проценты)</option>
-                    <option value="🔄 Возврат">🔄 Возврат (вернули долг)</option>
-                    <option value="💰 Другое">💰 Другое (прочий доход)</option>
+                    <option value="💰 Зарплата">💰 Зарплата</option>
+                    <option value="💼 Фриланс">💼 Фриланс</option>
+                    <option value="🎁 Подарок">🎁 Подарок</option>
+                    <option value="📈 Инвестиции">📈 Инвестиции</option>
+                    <option value="🏦 Проценты">🏦 Проценты</option>
+                    <option value="🔄 Возврат">🔄 Возврат</option>
+                    <option value="💰 Другое">💰 Другое</option>
                 </select>
             </div>
             <div class="input-group">
-                <label>Описание (необязательно, например: аванс за июль)</label>
-                <input type="text" id="incomeDesc" placeholder="аванс за июль" />
+                <label>Описание (необязательно)</label>
+                <input type="text" id="incomeDesc" placeholder="основная работа" />
             </div>
-            <button class="btn btn-green" onclick="sendIncome()">✅ Сохранить доход</button>
+            <div class="btn-container">
+                <button class="btn btn-back" onclick="showPage('main')">← Назад</button>
+                <button class="btn btn-green" onclick="sendIncome()">✅ Сохранить доход</button>
+            </div>
         </div>
 
         <!-- Расход -->
         <div id="expensePage" class="page">
-            <button class="back-btn" onclick="showPage('main')">← Назад</button>
             <h3>💸 Добавить расход</h3>
             <div class="input-group">
                 <label>Сумма (например, 500)</label>
@@ -217,28 +229,30 @@
             <div class="input-group">
                 <label>Категория</label>
                 <select id="expenseCategory">
-                    <option value="🍔 Еда">🍔 Еда (продукты, кафе)</option>
-                    <option value="🚇 Транспорт">🚇 Транспорт (такси, бензин)</option>
-                    <option value="🏠 ЖКХ">🏠 ЖКХ (квартплата, свет)</option>
-                    <option value="🛍️ Покупки">🛍️ Покупки (техника, подарки)</option>
-                    <option value="💊 Здоровье">💊 Здоровье (лекарства, врачи)</option>
-                    <option value="🎉 Развлечения">🎉 Развлечения (кино, игры)</option>
-                    <option value="📱 Связь">📱 Связь (интернет, телефон)</option>
-                    <option value="👕 Одежда">👕 Одежда (обувь, вещи)</option>
-                    <option value="📚 Образование">📚 Образование (курсы, книги)</option>
-                    <option value="💰 Другое">💰 Другое (прочие расходы)</option>
+                    <option value="🍔 Еда">🍔 Еда</option>
+                    <option value="🚇 Транспорт">🚇 Транспорт</option>
+                    <option value="🏠 ЖКХ">🏠 ЖКХ</option>
+                    <option value="🛍️ Покупки">🛍️ Покупки</option>
+                    <option value="💊 Здоровье">💊 Здоровье</option>
+                    <option value="🎉 Развлечения">🎉 Развлечения</option>
+                    <option value="📱 Связь">📱 Связь</option>
+                    <option value="👕 Одежда">👕 Одежда</option>
+                    <option value="📚 Образование">📚 Образование</option>
+                    <option value="💰 Другое">💰 Другое</option>
                 </select>
             </div>
             <div class="input-group">
-                <label>Описание (необязательно, например: обед в кафе)</label>
-                <input type="text" id="expenseDesc" placeholder="обед в кафе" />
+                <label>Описание (необязательно)</label>
+                <input type="text" id="expenseDesc" placeholder="продукты, кафе" />
             </div>
-            <button class="btn btn-red" onclick="sendExpense()">✅ Сохранить расход</button>
+            <div class="btn-container">
+                <button class="btn btn-back" onclick="showPage('main')">← Назад</button>
+                <button class="btn btn-red" onclick="sendExpense()">✅ Сохранить расход</button>
+            </div>
         </div>
 
         <!-- Бюджет -->
         <div id="budgetPage" class="page">
-            <button class="back-btn" onclick="showPage('main')">← Назад</button>
             <h3>📈 Бюджет</h3>
             <div class="input-group">
                 <label>Категория</label>
@@ -256,80 +270,93 @@
                 </select>
             </div>
             <div class="input-group">
-                <label>Лимит (₽, например: 10000)</label>
+                <label>Лимит (например: 10000)</label>
                 <input type="number" id="budgetAmountInput" placeholder="10000" />
             </div>
-            <button class="btn" onclick="sendBudget()">✅ Установить бюджет</button>
-            <button class="btn btn-red" onclick="sendDeleteBudget()" style="margin-top:10px; width:100%;">🗑️ Удалить лимит</button>
-        </div>
-
-        <!-- Отчёт -->
-        <div id="reportPage" class="page">
-            <button class="back-btn" onclick="showPage('main')">← Назад</button>
-            <h3>📊 Отчёт за текущий месяц</h3>
-            <div id="reportContainer">
-                <button class="btn" onclick="loadReport()" style="width:100%;">🔄 Загрузить отчёт</button>
+            <div id="budgetStatus" style="color:#aaa; margin-bottom:10px;"></div>
+            <div class="btn-container">
+                <button class="btn btn-back" onclick="showPage('main')">← Назад</button>
+                <button class="btn" onclick="sendBudget()">✅ Установить бюджет</button>
             </div>
+            <button class="btn btn-red" onclick="sendDeleteBudget()" style="width:100%; margin-top:10px;">🗑️ Удалить лимит</button>
         </div>
 
         <!-- История -->
         <div id="historyPage" class="page">
-            <button class="back-btn" onclick="showPage('main')">← Назад</button>
-            <h3>📋 История операций</h3>
-            <div id="historyContainer">
-                <button class="btn" onclick="loadHistory()" style="width:100%;">🔄 Загрузить историю</button>
+            <h3>📋 История</h3>
+            <div id="historyContainer"></div>
+            <div class="btn-container">
+                <button class="btn btn-back" onclick="showPage('main')">← Назад</button>
+                <button class="btn" onclick="loadHistory()">🔄 Обновить</button>
             </div>
         </div>
 
         <!-- Донат -->
         <div id="donatePage" class="page">
-            <button class="back-btn" onclick="showPage('main')">← Назад</button>
             <h3>⭐ Донат</h3>
+            <div class="card" style="text-align:left; font-size:14px; color:#aaa;">
+                Если бот помогает вам вести учёт финансов — вы можете оставить чаевые разработчику.<br/><br/>
+                <strong>Через Telegram Stars:</strong><br/>
+                Просто напишите сумму в Stars (например, 10, 25, 50 или любую другую).<br/><br/>
+                <strong>Внимание:</strong> сумма в платёжной форме отображается так:<br/>
+                • 10 Stars → ★ 1,000<br/>
+                • 25 Stars → ★ 2,500<br/>
+                • 50 Stars → ★ 5,000<br/>
+                • 100 Stars → ★ 10,000<br/><br/>
+                Если покупка Stars через бота недоступна:<br/>
+                Telegram → Настройки → «Звёзды» → Пополнить.
+            </div>
             <div class="input-group">
                 <label>Сумма в Stars (например, 25)</label>
                 <input type="number" id="donateAmountInput" placeholder="25" />
             </div>
-            <button class="btn btn-gold" onclick="sendDonate()">⭐ Отправить донат</button>
+            <div class="btn-container">
+                <button class="btn btn-back" onclick="showPage('main')">← Назад</button>
+                <button class="btn btn-gold" onclick="sendDonate()">⭐ Отправить донат</button>
+            </div>
         </div>
 
         <!-- Отзыв -->
         <div id="reviewPage" class="page">
-            <button class="back-btn" onclick="showPage('main')">← Назад</button>
             <h3>💬 Отзыв</h3>
             <div class="input-group">
                 <label>Ваш отзыв</label>
                 <textarea id="reviewTextInput" rows="4" placeholder="Напишите ваше мнение о боте..."></textarea>
             </div>
-            <button class="btn" onclick="sendReview()">✅ Отправить отзыв</button>
+            <div class="btn-container">
+                <button class="btn btn-back" onclick="showPage('main')">← Назад</button>
+                <button class="btn" onclick="sendReview()">✅ Отправить отзыв</button>
+            </div>
         </div>
 
         <!-- Инструкция -->
         <div id="helpPage" class="page">
-            <button class="back-btn" onclick="showPage('main')">← Назад</button>
-            <h3>❓ Инструкция</h3>
+            <h3>❓ Инструкция пользователя</h3>
             <div class="help-text">
-                <div class="part"><strong>💰 Доход:</strong> выберите категорию → введите сумму → описание (необязательно).<br/><em>Пример: 15000 зарплата</em></div>
-                <div class="part"><strong>💸 Расход:</strong> выберите категорию → введите сумму → описание (необязательно).<br/><em>Пример: 500 обед</em></div>
-                <div class="part"><strong>📈 Бюджет:</strong> установите лимит на категорию — бот предупредит о превышении.</div>
-                <div class="part"><strong>📊 Отчёт:</strong> показывает доходы и расходы за текущий месяц с разбивкой по категориям.</div>
-                <div class="part"><strong>📤 Excel:</strong> выгружает все операции в файл с итогами по месяцам.</div>
-                <div class="part"><strong>⭐ Донат:</strong> поддержите разработчика через Telegram Stars.</div>
-                <div class="part"><strong>💬 Отзыв:</strong> отправьте ваше мнение разработчику.</div>
-                <div class="part"><strong>🗑️ Сброс:</strong> удаляет все ваши данные (доходы, расходы, бюджеты).<br/><em>⚠️ Действие необратимо!</em></div>
-                <div class="part"><strong>📊 Статистика:</strong> доступна только администратору.</div>
+                <div class="part"><strong>💰 Как добавить доход:</strong><br/>Нажмите «Доход» → выберите категорию → введите сумму → описание (необязательно).<br/><em>Пример: 15000 зарплата</em></div>
+                <div class="part"><strong>💸 Как добавить расход:</strong><br/>Нажмите «Расход» → выберите категорию → введите сумму → описание (необязательно).<br/><em>Пример: 500 обед</em></div>
+                <div class="part"><strong>📈 Что такое бюджет?</strong><br/>Это функция установки лимита расходов на категорию в месяц. Нажмите «Бюджет», выберите категорию — бот покажет текущий лимит (если он есть). Вы можете установить новый лимит, изменить его или удалить. Если превысите лимит — бот предупредит.</div>
+                <div class="part"><strong>📊 Как посмотреть отчёт?</strong><br/>Нажмите «Отчёт» — бот покажет текущий месяц. Нажмите «Выбрать месяц» — можно посмотреть любой месяц.</div>
+                <div class="part"><strong>📤 Как выгрузить данные в Excel?</strong><br/>Нажмите «Отчёт / Выгрузка в Excel» — бот пришлёт файл с таблицей. В файле будут все ваши операции: дата, тип, категория, сумма и описание. Внизу таблицы — итоги: общие доходы, расходы и доступный баланс.</div>
+                <div class="part"><strong>⭐ Донат:</strong><br/>Вы можете оставить чаевые разработчику — кнопка «Донат» в меню. Приём донатов осуществляется через Telegram Stars.</div>
+                <div class="part"><strong>💬 Отзыв:</strong><br/>Нажмите «Отзыв» и напишите своё мнение о боте. Это поможет сделать его лучше!</div>
+                <div class="part"><strong>🗑️ Сброс:</strong><br/>Удаляет все ваши данные (доходы, расходы, бюджеты).<br/><em>⚠️ Действие необратимо!</em></div>
             </div>
+            <button class="btn btn-back" onclick="showPage('main')" style="width:100%; margin-top:10px;">← Назад</button>
         </div>
 
         <!-- Сброс -->
         <div id="resetPage" class="page">
-            <button class="back-btn" onclick="showPage('main')">← Назад</button>
             <h3>⚠️ Сброс данных</h3>
             <div class="card" style="border:1px solid #c62828;">
                 <p><strong>ВНИМАНИЕ!</strong></p>
                 <p>Это действие удалит все ваши доходы, расходы и бюджеты.</p>
                 <p><strong>Отменить нельзя!</strong></p>
             </div>
-            <button class="btn btn-red" onclick="sendResetConfirm()" style="width:100%;">🗑️ Удалить всё</button>
+            <div class="btn-container">
+                <button class="btn btn-back" onclick="showPage('main')">← Назад</button>
+                <button class="btn btn-red" onclick="sendResetConfirm()">🗑️ Удалить всё</button>
+            </div>
         </div>
     </div>
 
@@ -368,9 +395,9 @@
             fetch(`${SERVER_URL}/balance?chat_id=${chatId}`)
                 .then(r => r.json())
                 .then(d => {
-                    document.getElementById('balanceAmount').textContent = d.balance + ' ₽';
-                    document.getElementById('incomeAmount').textContent = d.income + ' ₽';
-                    document.getElementById('expenseAmount').textContent = d.expense + ' ₽';
+                    document.getElementById('balanceAmount').textContent = d.balance + ' р.';
+                    document.getElementById('incomeAmount').textContent = d.income + ' р.';
+                    document.getElementById('expenseAmount').textContent = d.expense + ' р.';
                 })
                 .catch(() => {});
         }
@@ -470,7 +497,7 @@
         }
 
         function sendExcel() {
-            sendCommand('📤 Выгрузка в Excel');
+            sendCommand('📤 Отчёт / Выгрузка в Excel');
         }
 
         function sendStats() {
@@ -491,55 +518,29 @@
                 }
                 let html = '';
                 data.transactions.forEach(t => {
-                    const cls = t.type === 'income' ? 'income' : 'expense';
+                    const arrow = t.type === 'income' ? '↗️' : '↘️';
+                    const arrowClass = t.type === 'income' ? 'up' : 'down';
                     const sign = t.type === 'income' ? '+' : '-';
-                    html += `<div class="history-item ${cls}">
-                        <div>${t.category} — ${sign}${t.amount} ₽</div>
-                        <div style="font-size:12px;color:#aaa;">${t.date} ${t.description ? '— ' + t.description : ''}</div>
-                    </div>`;
+                    const date = t.date ? t.date.slice(0, 10).replace(/-/g, '.') : '';
+                    html += `
+                        <div class="history-item">
+                            <span>
+                                <span class="arrow ${arrowClass}">${arrow}</span>
+                                ${date} - ${t.category} ${t.description ? '(' + t.description + ')' : ''}: ${sign}${t.amount} р.
+                            </span>
+                            ${t.over_budget ? '<span style="color:#ef5350; font-size:12px;">⚠️ превышен</span>' : ''}
+                        </div>
+                    `;
                 });
                 container.innerHTML = html;
                 showToast('✅ История загружена');
             });
         }
 
-        function loadReport() {
-            const container = document.getElementById('reportContainer');
-            container.innerHTML = '<div style="text-align:center;padding:20px;color:#aaa;">⏳ Загрузка...</div>';
-            fetchData('/report', (data) => {
-                if (!data.categories || data.categories.length === 0) {
-                    container.innerHTML = '<div style="text-align:center;padding:20px;color:#aaa;">📊 За этот месяц операций нет</div>';
-                    return;
-                }
-                let html = `
-                    <div class="report-block">
-                        <div class="label">↗️ Доходы</div>
-                        <div class="value" style="color:#4caf50;">${data.total_income} ₽</div>
-                    </div>
-                    <div class="report-block">
-                        <div class="label">↘️ Расходы</div>
-                        <div class="value" style="color:#ef5350;">${data.total_expense} ₽</div>
-                    </div>
-                    <div class="report-block">
-                        <div class="label">💵 Свободно</div>
-                        <div class="value" style="color:#f5c842;">${data.balance} ₽</div>
-                    </div>
-                    <div style="margin-top:16px;font-size:14px;font-weight:bold;color:#aaa;">Расходы по категориям:</div>
-                `;
-                data.categories.forEach(cat => {
-                    html += `<div class="report-category">
-                        <span>${cat.category}</span>
-                        <span style="color:#ef5350;">${cat.amount} ₽</span>
-                    </div>`;
-                });
-                container.innerHTML = html;
-                showToast('✅ Отчёт загружен');
-            });
-        }
-
         function showPage(page) {
             currentPage = page;
-            ['main', 'income', 'expense', 'budget', 'report', 'history', 'donate', 'review', 'help', 'reset'].forEach(id => {
+            const pages = ['main', 'income', 'expense', 'budget', 'history', 'donate', 'review', 'help', 'reset'];
+            pages.forEach(id => {
                 const el = document.getElementById(id + 'Page');
                 if (el) {
                     el.classList.remove('active');
@@ -552,7 +553,20 @@
                 el.classList.add('active');
             }
             if (page === 'history') loadHistory();
-            if (page === 'report') loadReport();
+            if (page === 'budget') loadBudgetStatus();
+        }
+
+        function loadBudgetStatus() {
+            const statusEl = document.getElementById('budgetStatus');
+            statusEl.textContent = '⏳ Загрузка...';
+            const category = document.getElementById('budgetCategory').value;
+            fetchData(`/budget_status?category=${encodeURIComponent(category)}`, (data) => {
+                if (data.limit) {
+                    statusEl.textContent = `📊 Текущий лимит: ${data.limit} р.`;
+                } else {
+                    statusEl.textContent = '📊 Лимит не установлен';
+                }
+            });
         }
 
         document.addEventListener('DOMContentLoaded', init);
