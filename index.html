@@ -139,26 +139,17 @@
         }
         .history-item .arrow.up { color: #4caf50; }
         .history-item .arrow.down { color: #ef5350; }
-        .report-block {
-            background: #1a1a1a;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-        }
-        .report-block .label { color: #aaa; font-size: 12px; }
-        .report-block .value { font-size: 18px; font-weight: bold; }
-        .report-category {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid #2a2a2a;
-        }
         .btn-container {
             display: flex;
             gap: 10px;
             margin-top: 10px;
         }
         .btn-container .btn { flex: 1; }
+        .budget-status {
+            color: #aaa;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -273,7 +264,7 @@
                 <label>Лимит (например: 10000)</label>
                 <input type="number" id="budgetAmountInput" placeholder="10000" />
             </div>
-            <div id="budgetStatus" style="color:#aaa; margin-bottom:10px;"></div>
+            <div id="budgetStatus" class="budget-status">⏳ Загрузка...</div>
             <div class="btn-container">
                 <button class="btn btn-back" onclick="showPage('main')">← Назад</button>
                 <button class="btn" onclick="sendBudget()">✅ Установить бюджет</button>
@@ -336,7 +327,7 @@
                 <div class="part"><strong>💰 Как добавить доход:</strong><br/>Нажмите «Доход» → выберите категорию → введите сумму → описание (необязательно).<br/><em>Пример: 15000 зарплата</em></div>
                 <div class="part"><strong>💸 Как добавить расход:</strong><br/>Нажмите «Расход» → выберите категорию → введите сумму → описание (необязательно).<br/><em>Пример: 500 обед</em></div>
                 <div class="part"><strong>📈 Что такое бюджет?</strong><br/>Это функция установки лимита расходов на категорию в месяц. Нажмите «Бюджет», выберите категорию — бот покажет текущий лимит (если он есть). Вы можете установить новый лимит, изменить его или удалить. Если превысите лимит — бот предупредит.</div>
-                <div class="part"><strong>📊 Как посмотреть отчёт?</strong><br/>Нажмите «Отчёт» — бот покажет текущий месяц. Нажмите «Выбрать месяц» — можно посмотреть любой месяц.</div>
+                <div class="part"><strong>📋 Как посмотреть историю?</strong><br/>Нажмите «История» — бот покажет последние операции. Листайте с помощью кнопок «Назад» и «Дальше».</div>
                 <div class="part"><strong>📤 Как выгрузить данные в Excel?</strong><br/>Нажмите «Отчёт / Выгрузка в Excel» — бот пришлёт файл с таблицей. В файле будут все ваши операции: дата, тип, категория, сумма и описание. Внизу таблицы — итоги: общие доходы, расходы и доступный баланс.</div>
                 <div class="part"><strong>⭐ Донат:</strong><br/>Вы можете оставить чаевые разработчику — кнопка «Донат» в меню. Приём донатов осуществляется через Telegram Stars.</div>
                 <div class="part"><strong>💬 Отзыв:</strong><br/>Нажмите «Отзыв» и напишите своё мнение о боте. Это поможет сделать его лучше!</div>
@@ -455,9 +446,23 @@
                 showToast('❌ Введите сумму');
                 return;
             }
-            sendCommand(`Расход ${amount} ${category}${desc ? ' ' + desc : ''}`);
+            // Перед отправкой проверяем лимит
+            checkBudgetAndSend(category, amount, desc);
             document.getElementById('expenseAmountInput').value = '';
             document.getElementById('expenseDesc').value = '';
+        }
+
+        function checkBudgetAndSend(category, amount, desc) {
+            fetch(`${SERVER_URL}/budget_status?chat_id=${chatId}&category=${encodeURIComponent(category)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.limit) {
+                        // Здесь можно проверить превышение, но логика на сервере
+                        // отправляем расход, сервер сам проверит и вернёт уведомление
+                    }
+                    sendCommand(`Расход ${amount} ${category}${desc ? ' ' + desc : ''}`);
+                })
+                .catch(() => sendCommand(`Расход ${amount} ${category}${desc ? ' ' + desc : ''}`));
         }
 
         function sendBudget() {
@@ -558,8 +563,8 @@
 
         function loadBudgetStatus() {
             const statusEl = document.getElementById('budgetStatus');
-            statusEl.textContent = '⏳ Загрузка...';
             const category = document.getElementById('budgetCategory').value;
+            statusEl.textContent = '⏳ Загрузка...';
             fetchData(`/budget_status?category=${encodeURIComponent(category)}`, (data) => {
                 if (data.limit) {
                     statusEl.textContent = `📊 Текущий лимит: ${data.limit} р.`;
