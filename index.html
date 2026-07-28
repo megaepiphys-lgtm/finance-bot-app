@@ -548,17 +548,19 @@
         }
 
         function loadBudgetStatus() {
-            const statusEl = document.getElementById('budgetStatus');
-            const category = document.getElementById('budgetCategory').value;
-            statusEl.textContent = '⏳ Загрузка...';
-            fetchData(`/budget_status?category=${encodeURIComponent(category)}`, (data) => {
-                if (data.limit) {
-                    statusEl.textContent = `📊 Текущий лимит: ${data.limit} р.`;
-                } else {
-                    statusEl.textContent = '📊 Лимит не установлен';
-                }
-            });
+    const statusEl = document.getElementById('budgetStatus');
+    const category = document.getElementById('budgetCategory').value;
+    statusEl.textContent = '⏳ Загрузка...';
+    const chatId = tg.initDataUnsafe?.user?.id;
+    if (!chatId) return;
+    fetchData(`/budget_status?category=${encodeURIComponent(category)}&chat_id=${chatId}`, (data) => {
+        if (data.limit) {
+            statusEl.textContent = `📊 Текущий лимит: ${data.limit} р.`;
+        } else {
+            statusEl.textContent = '📊 Лимит не установлен';
         }
+    });
+}
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
