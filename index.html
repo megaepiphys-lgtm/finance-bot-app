@@ -394,18 +394,18 @@
         }
 
         function fetchData(endpoint, callback) {
-            if (!chatId) return;
-            fetch(`${SERVER_URL}${endpoint}?chat_id=${chatId}`)
-                .then(r => r.json())
-                .then(data => {
-                    if (data.error) {
-                        showToast('❌ ' + data.error);
-                        return;
-                    }
-                    callback(data);
-                })
-                .catch(() => showToast('❌ Ошибка загрузки'));
-        }
+    if (!chatId) return;
+    fetch(`${SERVER_URL}${endpoint}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.error) {
+                showToast('❌ ' + data.error);
+                return;
+            }
+            callback(data);
+        })
+        .catch(() => showToast('❌ Ошибка загрузки'));
+}
 
         function sendCommand(text) {
             if (!chatId) return;
