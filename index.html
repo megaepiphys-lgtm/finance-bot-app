@@ -553,7 +553,7 @@
     statusEl.textContent = '⏳ Загрузка...';
     const chatId = tg.initDataUnsafe?.user?.id;
     if (!chatId) return;
-    fetchData(`/budget_status?category=${encodeURIComponent(category)}&chat_id=${chatId}`, (data) => {
+    fetchData(`/budget_status?category=${encodeURIComponent(category)}`, (data) => {
         if (data.limit) {
             statusEl.textContent = `📊 Текущий лимит: ${data.limit} р.`;
         } else {
@@ -561,7 +561,6 @@
         }
     });
 }
-
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
