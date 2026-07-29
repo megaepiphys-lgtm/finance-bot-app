@@ -459,7 +459,6 @@
         showToast('❌ Введите лимит');
         return;
     }
-    // Убираем эмодзи из категории
     const cleanCategory = category.replace(/[^\w\s]/gi, '').trim();
     sendCommand(`Бюджет ${cleanCategory} ${amount}`);
     document.getElementById('budgetAmountInput').value = '';
