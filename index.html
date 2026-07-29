@@ -453,15 +453,17 @@
         }
 
         function sendBudget() {
-            const category = document.getElementById('budgetCategory').value;
-            const amount = document.getElementById('budgetAmountInput').value;
-            if (!amount || amount <= 0) {
-                showToast('❌ Введите лимит');
-                return;
-            }
-            sendCommand(`Бюджет ${category} ${amount}`);
-            document.getElementById('budgetAmountInput').value = '';
-        }
+    const category = document.getElementById('budgetCategory').value;
+    const amount = document.getElementById('budgetAmountInput').value;
+    if (!amount || amount <= 0) {
+        showToast('❌ Введите лимит');
+        return;
+    }
+    // Убираем эмодзи из категории
+    const cleanCategory = category.replace(/[^\w\s]/gi, '').trim();
+    sendCommand(`Бюджет ${cleanCategory} ${amount}`);
+    document.getElementById('budgetAmountInput').value = '';
+}
 
         function sendDeleteBudget() {
             const category = document.getElementById('budgetCategory').value;
