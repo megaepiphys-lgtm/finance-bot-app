@@ -395,7 +395,8 @@
 
         function fetchData(endpoint, callback) {
     if (!chatId) return;
-    fetch(`${SERVER_URL}${endpoint}`)
+    const url = `${SERVER_URL}${endpoint}${endpoint.includes('?') ? '&' : '?'}chat_id=${chatId}`;
+    fetch(url)
         .then(r => r.json())
         .then(data => {
             if (data.error) {
