@@ -460,7 +460,7 @@
         return;
     }
     const cleanCategory = category.replace(/[^\w\s]/gi, '').trim();
-    sendCommand(`Бюджет ${cleanCategory} ${amount}`);
+    sendCommand(`Бюджет ${cleanCategory} ${amount}`.replace(/\s+/g, ' '));
     document.getElementById('budgetAmountInput').value = '';
 }
 
